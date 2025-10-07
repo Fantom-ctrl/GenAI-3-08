@@ -1,8 +1,8 @@
-import csv                               # импорт модуля для чтения/записи CSV-файлов
-import torch                             # импорт PyTorch — библиотека для тензоров и вычислений на GPU/CPU
-from transformers import AutoModelForCausalLM, AutoTokenizer # из Transformers импортируем класс модели для автогенерации (causal LM) и токенизатор для конвертации текста <-> токены  
-import logging                           # модуль для логирования (сообщений об ошибках/информации)
-from typing import Optional              # Optional — подсказка типов: значение может быть типа T или None
+import csv                            
+import torch                             
+from transformers import AutoModelForCausalLM, AutoTokenizer 
+import logging                          
+from typing import Optional             
 
 # Логирование
 logging.basicConfig(level=logging.INFO) # Настройка базовой конфигурации логирования
@@ -78,7 +78,7 @@ class Generator:
             with torch.no_grad():
                 outputs = self.model.generate(
                     inputs,
-                    attention_mask=attention_mask,       # ✅ добавлено для стабильности
+                    attention_mask=attention_mask,       # добавлено для стабильности
                     max_new_tokens=max_new_tokens,       # ограничиваем длину генерации
                     do_sample=True,                      # включаем вероятностное сэмплирование
                     temperature=temperature,             # контролируем "творчество"
@@ -101,7 +101,7 @@ class Generator:
             logger.error("Ошибка при генерации текста: %s", str(e))
             return None # Ловим ошибки и возвращаем None
 
-# ===== Вспомогательные функции =====
+# Вспомогательные функции
 def split_dialog(text: str):
     """Разделение текста на реплики — убираем пустые строки и обрезаем пробелы"""
     lines = [line.strip() for line in text.split("\n") if line.strip()]
@@ -124,7 +124,7 @@ def save_result_csv(prompt: str, dialog: list, filename: str = "result.csv"):
             writer.writerow([prompt, role, line])
     print(f"Результат сохранён в {filename}")  # Уведомление о сохранении
 
-# ===== Главная функция генерации =====
+# Главная функция генерации 
 def run_dialog_generation(prompt: str, generator: Generator, max_words=15, n_attempts=3, **kwargs):
     """Генерация с автоперегенерацией и сохранением в CSV"""
     best_dialog = None
@@ -159,8 +159,7 @@ def run_dialog_generation(prompt: str, generator: Generator, max_words=15, n_att
     else:
         print("Не удалось получить качественный диалог")
 
-# ===== Пример использования =====
-if __name__ == "__main__":
+def main():
     prompt_text = "Поддержка" # Начальный промпт
 
     generation_params = {
@@ -174,3 +173,7 @@ if __name__ == "__main__":
     generator = Generator()
     if generator.load_model():
         run_dialog_generation(prompt_text, generator, max_words=15, n_attempts=3, **generation_params)
+
+
+if __name__ == "__main__":
+    main()
