@@ -48,7 +48,7 @@ class Generator:
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.model_name,
                 device_map="auto" if device=="cuda" else None, # Для CPU отключаем auto
-                torch_dtype="auto"
+                dtype="auto"
             )
             print("Модель загружена.") # Подтверждение успешной загрузки
             return True # Возвращаем True при успехе
@@ -222,7 +222,7 @@ def main():
         - Загрузку модели
         - Генерацию диалога и сохранение результата
     """
-    prompt_text = "Разговор между собакой и кошкой" # Начальный промпт
+    prompt_text = "Поддержка пользователя, у которого проблемы с компьютером" # Начальный промпт
 
     generation_params = {
         "max_new_tokens": 250,
